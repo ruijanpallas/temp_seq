@@ -5,8 +5,9 @@ USE temp_seq;
 
 CREATE TABLE measurements (
   location_id text,
-  datetime timestamp,
+  date text,
+  time text,
   temperature double,
-  PRIMARY KEY (location_id, datetime)
+  PRIMARY KEY (location_id, date, time)
 );
 

@@ -35,27 +35,61 @@ public class TempSeqServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		Cluster cluster = Cluster.builder().addContactPoints("localhost").build();
+		Cluster cluster = Cluster.builder().addContactPoint("localhost").build();
 		
 		Session session = cluster.connect();
-
-		String queryString = "SELECT location_id, datetime, temperature FROM temp_seq.measurements";
+		
+		String locationId = request.getParameter("loc_id");
+		String dateVal = request.getParameter("date_val");
+		String queryString = "SELECT location_id, date, time, temperature FROM temp_seq.measurements WHERE location_id = '" + locationId + "' AND date = '" + dateVal + "'";
 		ResultSet result = session.execute(queryString);
 		
 		PrintWriter out = response.getWriter();
-		out.println("<html><head></head><body>");
-		out.println("Temperature sequence");
+		
+		out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html>");
+		out.println("<head><title>Temperature Sequence</title></head>");
+		out.println("<body>");
+		out.println("<h1>Temperature Sequence</h1>");
+		out.println("Enter the date and id of the location you want to track");	
+		out.println("<p>&nbsp;</p>");
+		out.println("<form id=\"form1\" name=\"form1\" method=\"get\" action=\"\">");
 		out.println("<table>");
-
-		for (Row row : result)
-		{
-		   out.println("<tr>");
-		   out.println("<td>" + row.getString("location_id") + "</td>");
-		   out.println("<td>" + row.getDate("datetime") + "</td>");
-		   out.println("<td>" + row.getDouble("temperature") + "</td>");   
-		   out.println("</tr>");
-		}
+		out.println("<tr><td>Date (e.g. 2014-12-12):</td>");
+		out.println("<td><input type=\"text\" name=\"date_val\" id=\"date_val\"/></td></tr>");
+		out.println("<tr><td>Location id (e.g. 1):</td>");
+		out.println("<td><input type=\"text\" name=\"loc_id\" id=\"loc_id\" /></td></tr>");
+		out.println("<tr><td></td><td><input type=\"submit\" name=\"submit\" id=\"submit\" value=\"Submit\"/></td></tr>");
 		out.println("</table>");
+		out.println("</form>");
+		out.println("<p>&nbsp;</p>");
+		
+		if(request.getParameter("loc_id") == null)
+		{
+			// blank
+		}
+		else if(result.isExhausted())
+		{
+			out.println("<hr/>");
+			out.println("<p>&nbsp;</p>");
+			out.println("Sorry, no results for location id " + request.getParameter("loc_id") + " for " + request.getParameter("date_val"));
+		}		
+		else
+		{
+			out.println("<hr/>");
+			out.println("<table cellpadding=\"4\">");
+			out.println("<tr><td><b>Location id</b></td><td><b>Date</b></td><td><b>Time</b></td><td><b>Temperature</b></td></tr>");
+			for (Row row : result)
+			{
+			   out.println("<tr>");
+			   out.println("<td>" + row.getString("location_id") + "</td>");
+			   out.println("<td>" + row.getString("date") + "</td>");
+			   out.println("<td>" + row.getString("time") + "</td>");
+			   out.println("<td>" + row.getDouble("temperature") + "</td>");   
+			   out.println("</tr>");
+			}
+			out.println("</table>");			
+		}
+
 		out.println("</body></html>");
 	}
 
