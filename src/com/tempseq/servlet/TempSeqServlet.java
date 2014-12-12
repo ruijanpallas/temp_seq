@@ -41,7 +41,7 @@ public class TempSeqServlet extends HttpServlet {
 		
 		String locationId = request.getParameter("loc_id");
 		String dateVal = request.getParameter("date_val");
-		String queryString = "SELECT location_id, date, time, temperature FROM temp_seq.measurements WHERE location_id = '" + locationId + "' AND date = '" + dateVal + "'";
+		String queryString = "SELECT location_id, time, temperature FROM temp_seq.measurements WHERE location_id = '" + locationId + "' AND date = '" + dateVal + "'";
 		ResultSet result = session.execute(queryString);
 		
 		PrintWriter out = response.getWriter();
@@ -76,14 +76,13 @@ public class TempSeqServlet extends HttpServlet {
 		else
 		{
 			out.println("<hr/>");
-			out.println("<table cellpadding=\"4\">");
-			out.println("<tr><td><b>Location id</b></td><td><b>Date</b></td><td><b>Time</b></td><td><b>Temperature</b></td></tr>");
+			out.println("<table cellpadding=\"8\">");
+			out.println("<tr><td><b>Location id</b></td><td><b>Date and Time</b></td><td><b>Temperature</b></td></tr>");
 			for (Row row : result)
 			{
 			   out.println("<tr>");
 			   out.println("<td>" + row.getString("location_id") + "</td>");
-			   out.println("<td>" + row.getString("date") + "</td>");
-			   out.println("<td>" + row.getString("time") + "</td>");
+			   out.println("<td>" + row.getDate("time") + "</td>");
 			   out.println("<td>" + row.getDouble("temperature") + "</td>");   
 			   out.println("</tr>");
 			}
