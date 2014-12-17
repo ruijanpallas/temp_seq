@@ -39,4 +39,19 @@ public class TempSeqDao {
 	public Iterator <GetsSets> getResultIterator() {
 		return resultList.iterator();
 	}	
+
+	public TempSeqDao(String locationId, String dateVal, String timeVal, String temperature, Boolean create) {
+		if (create)
+			insertData(locationId, dateVal, timeVal, temperature);
+		// else update
+	}
+
+	protected void insertData(String locationId, String dateVal, String timeVal, String temperature) {
+		
+		session = CassandraAccess.getInstance();
+
+		String datetimeVal = dateVal + " " + timeVal;
+		String queryString = "INSERT INTO temp_seq.measurements(location_id, date, time, temperature) VALUES('" + locationId + "', '" + dateVal + "', '" + datetimeVal + "', " + temperature + " )";
+		result = session.execute(queryString);
+	}
 }

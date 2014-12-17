@@ -16,7 +16,7 @@ import com.tempseq.dao.GetsSets;
 /**
  * Servlet implementation class TempSeqServlet
  */
-@WebServlet("/status")
+@WebServlet("/data")
 public class TempSeqServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -83,6 +83,24 @@ public class TempSeqServlet extends HttpServlet {
 				out.println("<p>&nbsp;</p>");
 				out.println("Sorry, no results for vehicle id " + request.getParameter("loc_id") + " for " + request.getParameter("date_val"));
 			}	
+	    }
+		out.println("</body></html>");		
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * 
+	 * URI: i.g., http://localhost:8080/temp_seq/status?loc_id=33&date_val=2014-11-18&time_val=01:01:30&temp_val=27
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		if (request.getParameter("loc_id") != null)
+	    {	
+			new TempSeqDao(request.getParameter("loc_id"), request.getParameter("date_val"), request.getParameter("time_val"), request.getParameter("temp_val"), true);
+
+			PrintWriter out = response.getWriter();
+			out.println(request.getParameter("date_val"));
+
 	    }
 	}
 }
