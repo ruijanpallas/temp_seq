@@ -15,14 +15,15 @@ public class TempSeqDao {
 	private ResultSet result = null;
 	private LinkedList <GetsSets> resultList;
 	
-	public TempSeqDao(String locationId, String dateVal) {
-		getData(locationId, dateVal);
+	public TempSeqDao(String locationId, String fromTime, String toTime) {
+		getData(locationId, fromTime, toTime);
 	}
 
-	protected void getData(String locationId, String dateVal) {
+	protected void getData(String locationId, String fromTime, String toTime) {
 		session = CassandraAccess.getInstance();
 
-		String queryString = "SELECT location_id, time, temperature FROM temp_seq.measurements WHERE location_id = '" + locationId + "' AND date = '" + dateVal + "'";
+		String queryString = "SELECT location_id, time, temperature FROM temp_seq.measurements WHERE location_id = '" + 
+		  locationId + "' AND time >= '" + fromTime + "' AND time <= '" + toTime + "'";
 		result = session.execute(queryString);
 		resultList = new LinkedList<GetsSets>();
 		
@@ -44,18 +45,17 @@ public class TempSeqDao {
 		return resultList;
 	}	
 
-	public TempSeqDao(String locationId, String dateVal, String timeVal, String temperature, Boolean create) {
+	public TempSeqDao(String locationId, String timeVal, String temperature, Boolean create) {
 		if (create)
-			insertData(locationId, dateVal, timeVal, temperature);
+			insertData(locationId, timeVal, temperature);
 		// else update
 	}
 
-	protected void insertData(String locationId, String dateVal, String timeVal, String temperature) {
+	protected void insertData(String locationId, String timeVal, String temperature) {
 		
 		session = CassandraAccess.getInstance();
 
-		String datetimeVal = dateVal + " " + timeVal;
-		String queryString = "INSERT INTO temp_seq.measurements(location_id, date, time, temperature) VALUES('" + locationId + "', '" + dateVal + "', '" + datetimeVal + "', " + temperature + " )";
+		String queryString = "INSERT INTO temp_seq.measurements(location_id, time, temperature) VALUES('" + locationId + "', '" + timeVal + "', " + temperature + " )";
 		result = session.execute(queryString);
 	}
 }

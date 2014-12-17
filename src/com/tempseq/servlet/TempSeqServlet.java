@@ -33,10 +33,12 @@ public class TempSeqServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 * 
 	 * an example:
+	 * $ curl --request GET "http://localhost:8080/temp_seq/data?loc_id=3&from_time=2014-11-13&to_time=2014-12-12"
+	 * 
 	 * {"@type":"java.util.LinkedList",
 	 *   "@items":[
-	 *     {"@type":"com.tempseq.dao.GetsSets","locationId":"2","time":"Thu Jan 01 02:00:00 EET 1970","temperature":0.0},
-	 *     {"@type":"com.tempseq.dao.GetsSets","locationId":"2","time":"Wed Nov 12 00:00:00 EET 2014","temperature":20.0}
+	 *     {"@type":"com.tempseq.dao.GetsSets","locationId":"3","time":"Thu Nov 13 00:00:00 EET 2014","temperature":0.0},
+	 *     {"@type":"com.tempseq.dao.GetsSets","locationId":"3","time":"Thu Nov 13 01:30:00 EET 2014","temperature":31.0}
 	 *   ]
 	 * }
 	 */
@@ -47,7 +49,7 @@ public class TempSeqServlet extends HttpServlet {
 		
 		if (request.getParameter("loc_id") != null)
 	    {	
-			TempSeqDao tsd = new TempSeqDao(request.getParameter("loc_id"), request.getParameter("date_val"));
+			TempSeqDao tsd = new TempSeqDao(request.getParameter("loc_id"), request.getParameter("from_time"), request.getParameter("to_time"));
 			String json = JsonWriter.objectToJson(tsd.getResultList());
 			out.println(json);
 	    }
@@ -56,13 +58,15 @@ public class TempSeqServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 * 
-	 * URI: i.g., http://localhost:8080/temp_seq/status?loc_id=33&date_val=2014-11-18&time_val=01:01:30&temp_val=27
+	 * URI: e.g., http://localhost:8080/temp_seq/data?loc_id=33&time_val=2014-12-17 01:01:30&temp_val=27
+	 * i.e.,
+	 * $ curl --request POST "http://localhost:8080/temp_seq/data?loc_id=33&time_val=2014-12-17%2001:01:30&temp_val=27"
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		if (request.getParameter("loc_id") != null)
 	    {	
-			new TempSeqDao(request.getParameter("loc_id"), request.getParameter("date_val"), request.getParameter("time_val"), request.getParameter("temp_val"), true);
+			new TempSeqDao(request.getParameter("loc_id"), request.getParameter("time_val"), request.getParameter("temp_val"), true);
 
 			PrintWriter out = response.getWriter();
 			out.println(request.getParameter("date_val"));
