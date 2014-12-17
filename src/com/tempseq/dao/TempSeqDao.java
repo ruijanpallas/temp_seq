@@ -40,6 +40,10 @@ public class TempSeqDao {
 		return resultList.iterator();
 	}	
 
+	public LinkedList <GetsSets> getResultList() {
+		return resultList;
+	}	
+
 	public TempSeqDao(String locationId, String dateVal, String timeVal, String temperature, Boolean create) {
 		if (create)
 			insertData(locationId, dateVal, timeVal, temperature);
