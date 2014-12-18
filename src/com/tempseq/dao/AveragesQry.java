@@ -8,38 +8,37 @@ import com.cedarsoftware.util.io.JsonWriter;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.tempseq.dao.CassandraAccess;
-import com.tempseq.dao.Measurement;
 
-public class MeasurementsQry {
+public class AveragesQry {
 
 	private Session session = null;
 	private ResultSet result = null;
-	private LinkedList <Measurement> resultList;
+	private LinkedList <Average> resultList;
 	
-	public MeasurementsQry(String locationId, String fromTime, String toTime) {
-		getData(locationId, fromTime, toTime);
+	public AveragesQry(String locationId, String fromDate, String toDate) {
+		getData(locationId, fromDate, toDate);
 	}
 
-	protected void getData(String locationId, String fromTime, String toTime) {
+	protected void getData(String locationId, String fromDate, String toDate) {
 		session = CassandraAccess.getInstance();
 
-		String queryString = "SELECT location_id, time, temperature FROM temp_seq.measurements WHERE location_id = '" + 
-		  locationId + "' AND time >= '" + fromTime + "' AND time <= '" + toTime + "'";
+		String queryString = "SELECT location_id, date, average, samples FROM temp_seq.daily_averages WHERE location_id = '" + 
+		  locationId + "' AND date >= '" + fromDate + "' AND date <= '" + toDate + "'";
 		result = session.execute(queryString);
-		resultList = new LinkedList<Measurement>();
+		resultList = new LinkedList<Average>();
 		
 		for (Row row : result) {
-			Measurement location = new Measurement();
+			Average location = new Average();
 			location.setLocationId(row.getString("location_id"));
-			location.setTime(row.getDate("time").toString());
-			location.setTemperature(row.getDouble("temperature"));
+			location.setDate(row.getString("date"));
+			location.setAverage(row.getDouble("average"));
+			location.setSamples(row.getInt("samples"));
 			
 			resultList.add(location);
 		}
 	}
 
-	public Iterator <Measurement> getResultIterator() {
+	public Iterator <Average> getResultIterator() {
 		return resultList.iterator();
 	}	
 

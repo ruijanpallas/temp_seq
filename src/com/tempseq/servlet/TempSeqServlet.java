@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cedarsoftware.util.io.JsonWriter;
+import com.tempseq.dao.AveragesQry;
 import com.tempseq.dao.InsertDataQry;
 import com.tempseq.dao.MeasurementsQry;
 
@@ -33,8 +33,8 @@ public class TempSeqServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 * 
-	 * an example:
-	 * $ curl --request GET "http://localhost:8080/temp_seq/data?loc_id=3&from_time=2014-11-13&to_time=2014-12-12"
+	 * examples:
+	 * $ curl --request GET "http://localhost:8080/temp_seq/measurements?loc_id=3&from_time=2014-11-13&to_time=2014-12-12"
 	 * 
 	 * {"@type":"java.util.LinkedList",
 	 *   "@items":[
@@ -42,7 +42,17 @@ public class TempSeqServlet extends HttpServlet {
 	 *     {"@type":"com.tempseq.dao.GetsSets","locationId":"3","time":"Thu Nov 13 01:30:00 EET 2014","temperature":31.0}
 	 *   ]
 	 * }
-	 */
+	 * 
+ 	 * $ curl --request GET "http://localhost:8080/temp_seq/averages?loc_id=6&from_date=2014-01-01&to_date=2014-12-12"
+	 * 
+	 * {"@type":"java.util.LinkedList",
+	 *   "@items":[
+	 *     {"@type":"com.tempseq.dao.Average","locationId":"6","date":"2014-01-01","average":22.5,"samples":2},
+	 *     {"@type":"com.tempseq.dao.Average","locationId":"6","date":"2014-01-12","average":2.0,"samples":1}
+	 *   ]
+	 * }
+	 * 
+*/
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		response.setContentType("application/json");
@@ -54,9 +64,12 @@ public class TempSeqServlet extends HttpServlet {
 			if ("/measurements".equals(request.getServletPath()))
 			{
 				MeasurementsQry tsd = new MeasurementsQry(request.getParameter("loc_id"), request.getParameter("from_time"), request.getParameter("to_time"));
-				json = JsonWriter.objectToJson(tsd.getResultList());
+				json = tsd.toJson();
 			}
-			else if ("/averages".equals(request.getServletPath())) {
+			else if ("/averages".equals(request.getServletPath()))
+			{
+				AveragesQry tsd = new AveragesQry(request.getParameter("loc_id"), request.getParameter("from_date"), request.getParameter("to_date"));
+				json = tsd.toJson();
 			}
 				
 			out.println(json);
