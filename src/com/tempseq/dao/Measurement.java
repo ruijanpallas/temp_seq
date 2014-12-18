@@ -1,6 +1,6 @@
 package com.tempseq.dao;
 
-public class GetsSets {
+public class Measurement {
 
 	private String locationId;
 	private String time;

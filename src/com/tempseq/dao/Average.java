@@ -1,6 +1,6 @@
 package com.tempseq.dao;
 
-public class GetAverage {
+public class Average {
 
 	private String locationId;
 	private String date;

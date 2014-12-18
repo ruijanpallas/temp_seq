@@ -10,12 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cedarsoftware.util.io.JsonWriter;
-import com.tempseq.dao.TempSeqDao;
+import com.tempseq.dao.InsertDataQry;
+import com.tempseq.dao.MeasurementsQry;
 
 /**
  * Servlet implementation class TempSeqServlet
  */
-@WebServlet("/data")
+@WebServlet(
+		urlPatterns = {"/measurements", "/averages", "/data"}
+)
 public class TempSeqServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -46,9 +49,16 @@ public class TempSeqServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		if (request.getParameter("loc_id") != null)
-	    {	
-			TempSeqDao tsd = new TempSeqDao(request.getParameter("loc_id"), request.getParameter("from_time"), request.getParameter("to_time"));
-			String json = JsonWriter.objectToJson(tsd.getResultList());
+	    {
+			String json = "";
+			if ("/measurements".equals(request.getServletPath()))
+			{
+				MeasurementsQry tsd = new MeasurementsQry(request.getParameter("loc_id"), request.getParameter("from_time"), request.getParameter("to_time"));
+				json = JsonWriter.objectToJson(tsd.getResultList());
+			}
+			else if ("/averages".equals(request.getServletPath())) {
+			}
+				
 			out.println(json);
 	    }
 	}
@@ -64,7 +74,7 @@ public class TempSeqServlet extends HttpServlet {
 
 		if (request.getParameter("loc_id") != null)
 	    {	
-			new TempSeqDao(request.getParameter("loc_id"), request.getParameter("time_val"), request.getParameter("temp_val"), true);
+			new InsertDataQry(request.getParameter("loc_id"), request.getParameter("time_val"), request.getParameter("temp_val"));
 	    }
 	}
 }
