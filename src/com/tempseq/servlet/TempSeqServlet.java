@@ -2,7 +2,6 @@ package com.tempseq.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Iterator;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.cedarsoftware.util.io.JsonWriter;
 import com.tempseq.dao.TempSeqDao;
-import com.tempseq.dao.GetsSets;
 
 /**
  * Servlet implementation class TempSeqServlet
@@ -58,19 +56,15 @@ public class TempSeqServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 * 
-	 * URI: e.g., http://localhost:8080/temp_seq/data?loc_id=33&time_val=2014-12-17 01:01:30&temp_val=27
+	 * URI: e.g., http://localhost:8080/temp_seq/data?loc_id=5&time_val=2014-01-01 02:30:25&temp_val=20
 	 * i.e.,
-	 * $ curl --request POST "http://localhost:8080/temp_seq/data?loc_id=33&time_val=2014-12-17%2001:01:30&temp_val=27"
+	 * $ curl --request POST "http://localhost:8080/temp_seq/data?loc_id=5&time_val=2014-01-01%2002%3A30%3A25&temp_val=20"
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		if (request.getParameter("loc_id") != null)
 	    {	
 			new TempSeqDao(request.getParameter("loc_id"), request.getParameter("time_val"), request.getParameter("temp_val"), true);
-
-			PrintWriter out = response.getWriter();
-			out.println(request.getParameter("date_val"));
-
 	    }
 	}
 }
