@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.tempseq.dao.AveragesQry;
+import com.tempseq.dao.GenerateDataQry;
 import com.tempseq.dao.InsertDataQry;
 import com.tempseq.dao.MeasurementsQry;
 
@@ -17,7 +18,7 @@ import com.tempseq.dao.MeasurementsQry;
  * Servlet implementation class TempSeqServlet
  */
 @WebServlet(
-		urlPatterns = {"/measurements", "/averages", "/data"}
+		urlPatterns = {"/measurements", "/averages", "/data", "/data_generation"}
 )
 public class TempSeqServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -79,15 +80,29 @@ public class TempSeqServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 * 
+	 * To insert a measurement:
+	 * 
 	 * URI: e.g., http://localhost:8080/temp_seq/data?loc_id=5&time_val=2014-01-01 02:30:25&temp_val=20
 	 * i.e.,
 	 * $ curl --request POST "http://localhost:8080/temp_seq/data?loc_id=5&time_val=2014-01-01%2002%3A30%3A25&temp_val=20"
+	 * 
+	 * To generation 1 million measurements for a location:
+	 * 
+	 * URI: e.g., http://localhost:8080/temp_seq/data_generation?loc_id=5
+	 * i.e.,
+	 * $ curl --request POST "http://localhost:8080/temp_seq/data_generation?loc_id=5"
+	 * 
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		if (request.getParameter("loc_id") != null)
 	    {	
-			new InsertDataQry(request.getParameter("loc_id"), request.getParameter("time_val"), request.getParameter("temp_val"));
+			if ("/data_generation".equals(request.getServletPath()))
+			{
+				new GenerateDataQry(request.getParameter("loc_id"), request.getParameter("count"));
+			}
+			else
+				new InsertDataQry(request.getParameter("loc_id"), request.getParameter("time_val"), request.getParameter("temp_val"));
 	    }
 	}
 }

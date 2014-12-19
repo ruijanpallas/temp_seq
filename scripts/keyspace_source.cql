@@ -17,6 +17,6 @@ CREATE TABLE daily_averages (
   date text,
   sum counter,
   samples counter,
-  PRIMARY KEY (location_id, date)
+  PRIMARY KEY ((location_id), date)
 );
 
