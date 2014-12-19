@@ -22,7 +22,7 @@ public class AveragesQry {
 	protected void getData(String locationId, String fromDate, String toDate) {
 		session = CassandraAccess.getInstance();
 
-		String queryString = "SELECT location_id, date, average, samples FROM temp_seq.daily_averages WHERE location_id = '" + 
+		String queryString = "SELECT location_id, date, sum, samples FROM temp_seq.daily_averages WHERE location_id = '" + 
 		  locationId + "' AND date >= '" + fromDate + "' AND date <= '" + toDate + "'";
 		result = session.execute(queryString);
 		resultList = new LinkedList<Average>();
@@ -31,8 +31,8 @@ public class AveragesQry {
 			Average location = new Average();
 			location.setLocationId(row.getString("location_id"));
 			location.setDate(row.getString("date"));
-			location.setAverage(row.getDouble("average"));
-			location.setSamples(row.getInt("samples"));
+			location.setSamples(row.getLong("samples"));
+			location.setAverage(row.getLong("sum"));
 			
 			resultList.add(location);
 		}

@@ -5,7 +5,7 @@ public class Average {
 	private String locationId;
 	private String date;
 	private Double average;
-	private int samples;
+	private long samples;
 	
 	public String getLocationId() {
 		return locationId;
@@ -22,14 +22,14 @@ public class Average {
 	public Double getAverage() {
 		return average;
 	}	
-	public void setAverage(Double average) {
-		this.average = average;
+	public void setAverage(long sum) {
+		this.average = sum / (double) samples;
 	}
 
-	public int getSamples() {
+	public long getSamples() {
 		return samples;
 	}	
-	public void setSamples(int samples) {
+	public void setSamples(long samples) {
 		this.samples = samples;
 	}
 }

@@ -33,7 +33,7 @@ public class MeasurementsQry {
 			Measurement location = new Measurement();
 			location.setLocationId(row.getString("location_id"));
 			location.setTime(row.getDate("time").toString());
-			location.setTemperature(row.getDouble("temperature"));
+			location.setTemperature(row.getInt("temperature"));
 			
 			resultList.add(location);
 		}

@@ -8,15 +8,15 @@ USE temp_seq;
 CREATE TABLE measurements (
   location_id text,
   time timestamp,
-  temperature double,
+  temperature int,
   PRIMARY KEY ((location_id), time)
 );
 
 CREATE TABLE daily_averages (
   location_id text,
   date text,
-  average double,
-  samples int,
+  sum counter,
+  samples counter,
   PRIMARY KEY (location_id, date)
 );
 

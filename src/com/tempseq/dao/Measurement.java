@@ -4,7 +4,7 @@ public class Measurement {
 
 	private String locationId;
 	private String time;
-	private Double temperature;
+	private int temperature;
 	
 	public String getLocationId() {
 		return locationId;
@@ -18,10 +18,10 @@ public class Measurement {
 	public void setTime(String time) {
 		this.time = time;
 	}
-	public Double getTemperature() {
+	public int getTemperature() {
 		return temperature;
 	}	
-	public void setTemperature(Double temperature) {
+	public void setTemperature(int temperature) {
 		this.temperature = temperature;
 	}
 }
